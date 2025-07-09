@@ -16,9 +16,7 @@ import java.util.Map;
 )
 public final class App implements Runnable {
 
-    @Option(names = {"-f", "--format"},
-            description = "output format [default: stylish]")
-    private String format = "stylish";
+
 
     @Parameters(index = "0", description = "path to first file")
     private String filepath1;
