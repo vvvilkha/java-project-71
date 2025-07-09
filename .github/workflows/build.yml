@@ -43,8 +43,7 @@ jobs:
         working-directory: app
         run: ./gradlew checkstyleMain checkstyleTest
 
-      - name: Build, test and analyze with SonarQube
-        working-directory: app
+      - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build jacocoTestReport sonarqube --info
+        run: ./gradlew build jacocoTestReport sonar --info
