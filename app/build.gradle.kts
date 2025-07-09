@@ -46,7 +46,7 @@ jacoco {
 }
 
 tasks.jacocoTestReport {
-    dependsOn(tasks.test) // чтобы сначала запустились тесты
+    dependsOn(tasks.test)
 
     reports {
         xml.required.set(true)
