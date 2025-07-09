@@ -33,9 +33,9 @@ public class App implements Runnable {
             Map<String, Object> data1 = readFile(filepath1);
             Map<String, Object> data2 = readFile(filepath2);
 
-            System.out.println("File 1 data: " + data1);
-            System.out.println("File 2 data: " + data2);
-            System.out.println("Format: " + format);
+            String diff = Differ.generate(data1, data2);
+            System.out.println(diff);
+
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             System.exit(1);
