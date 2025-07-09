@@ -48,6 +48,3 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew build jacocoTestReport sonarqube --info
-
-      - name: Generate Jacoco Test Report
-        run: ./gradlew jacocoTestReport
