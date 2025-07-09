@@ -4,27 +4,35 @@ import java.util.List;
 import java.util.Map;
 
 public class StylishFormatter {
-    public static String format(Object diffObject) {
-        List<Map<String, Object>> diff = (List<Map<String, Object>>) diffObject;
-        StringBuilder result = new StringBuilder("{\n");
+    public static final String REMOVED_LINE_FORMAT = "  - %s: %s\n";
+    public static final String ADDED_LINE_FORMAT = "  + %s: %s\n";
+    public static final String SAME_LINE_FORMAT = "    %s: %s\n";
+    public static final String UPDATED_LINE_FORMAT_REMOVED = "  - %s: %s\n";
+    public static final String UPDATED_LINE_FORMAT_ADDED = "  + %s: %s\n";
 
-        for (Map<String, Object> entry : diff) {
-            String key = (String) entry.get("key");
-            String status = (String) entry.get("status");
+    public static String formatStylish(List<Map<String, Object>> result) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{\n");
 
-            switch (status) {
-                case "removed" -> result.append("  - ").append(key).append(": ").append(entry.get("value")).append("\n");
-                case "added" -> result.append("  + ").append(key).append(": ").append(entry.get("value")).append("\n");
-                case "unchanged" -> result.append("    ").append(key).append(": ").append(entry.get("value")).append("\n");
-                case "updated" -> {
-                    result.append("  - ").append(key).append(": ").append(entry.get("oldValue")).append("\n");
-                    result.append("  + ").append(key).append(": ").append(entry.get("newValue")).append("\n");
+        for (Map<String, Object> diffLine : result) {
+            var fieldStatus = (String) diffLine.get("STATUS");
+            var fieldName = (String) diffLine.get("FIELD");
+            var oldFieldValue = diffLine.get("OLD_VALUE");
+            var newFieldValue = diffLine.get("NEW_VALUE");
+
+            switch (fieldStatus) {
+                case "REMOVED" -> builder.append(REMOVED_LINE_FORMAT.formatted(fieldName, oldFieldValue));
+                case "ADDED" -> builder.append(ADDED_LINE_FORMAT.formatted(fieldName, newFieldValue));
+                case "SAME" -> builder.append(SAME_LINE_FORMAT.formatted(fieldName, oldFieldValue));
+                case "UPDATED" -> {
+                    builder.append(UPDATED_LINE_FORMAT_REMOVED.formatted(fieldName, oldFieldValue));
+                    builder.append(UPDATED_LINE_FORMAT_ADDED.formatted(fieldName, newFieldValue));
                 }
-                default -> throw new RuntimeException("Unknown status: " + status);
+                default -> { }
             }
         }
 
-        result.append("}");
-        return result.toString();
+        builder.append("}");
+        return builder.toString();
     }
 }

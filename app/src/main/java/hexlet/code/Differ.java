@@ -1,47 +1,53 @@
 package hexlet.code;
 
-import java.util.*;
+import hexlet.code.formatters.Formatter;
 
-public final class Differ {
-    private Differ() { }
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
 
-    public static String generate(Map<String, Object> data1, Map<String, Object> data2, String formatName) {
-        List<Map<String, Object>> diff = buildDiff(data1, data2);
-        return Formatter.format(diff, formatName);
+
+import static hexlet.code.DiffBuilder.buildDifference;
+import static hexlet.code.Parser.parse;
+
+public class Differ {
+    private static final String DEFAULT_FORMAT = "stylish";
+
+    public static String generate(String filePath1, String filePath2, String format) throws Exception {
+        Map<String, Object> map1 = fileToMap(filePath1);
+        Map<String, Object> map2 = fileToMap(filePath2);
+        List<Map<String, Object>> result = buildDifference(map1, map2);
+        return Formatter.format(format, result);
     }
 
-    public static List<Map<String, Object>> buildDiff(Map<String, Object> data1, Map<String, Object> data2) {
-        Set<String> keys = new TreeSet<>();
-        keys.addAll(data1.keySet());
-        keys.addAll(data2.keySet());
+    public static String generate(String filePath1, String filePath2) throws Exception {
+        return generate(filePath1, filePath2, DEFAULT_FORMAT);
+    }
 
-        List<Map<String, Object>> diff = new ArrayList<>();
-
-        for (String key : keys) {
-            Map<String, Object> entry = new HashMap<>();
-
-            if (!data2.containsKey(key)) {
-                entry.put("key", key);
-                entry.put("status", "removed");
-                entry.put("value", data1.get(key));
-            } else if (!data1.containsKey(key)) {
-                entry.put("key", key);
-                entry.put("status", "added");
-                entry.put("value", data2.get(key));
-            } else if (Objects.equals(data1.get(key), data2.get(key))) {
-                entry.put("key", key);
-                entry.put("status", "unchanged");
-                entry.put("value", data1.get(key));
-            } else {
-                entry.put("key", key);
-                entry.put("status", "updated");
-                entry.put("oldValue", data1.get(key));
-                entry.put("newValue", data2.get(key));
-            }
-
-            diff.add(entry);
+    public static Map<String, Object> fileToMap(String filePath) throws Exception {
+        if (filePath == null || filePath.trim().isEmpty()) {
+            throw new IllegalArgumentException("File path must be provided");
         }
 
-        return diff;
+        Path file = Paths.get(filePath);
+        if (!Files.exists(file)) {
+            throw new Exception("File '" + filePath + "' not found");
+        }
+
+        String content = Files.readString(file);
+        String format = getFormat(filePath);
+        return parse(content, format);
+    }
+
+
+    private static String getFormat(String filePath) {
+        String lowerCasePath = filePath.toLowerCase();
+        int lastDotIndex = lowerCasePath.lastIndexOf('.');
+        if (lastDotIndex == -1 || lastDotIndex == lowerCasePath.length() - 1) {
+            return "";
+        }
+        return lowerCasePath.substring(lastDotIndex + 1);
     }
 }

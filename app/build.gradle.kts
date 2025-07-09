@@ -5,6 +5,7 @@ plugins {
     id("application")
     id("org.sonarqube") version "6.2.0.5505"
     id("jacoco")
+    id("io.freefair.lombok") version "8.13.1"
 }
 
 group = "hexlet.code"
@@ -24,11 +25,16 @@ repositories {
 
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    implementation("org.apache.commons:commons-lang3:3.17.0")
+    implementation("org.apache.commons:commons-collections4:4.5.0-M3")
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("info.picocli:picocli:4.7.7")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.0")
     testImplementation("org.assertj:assertj-core:3.25.3")
+    testCompileOnly("org.projectlombok:lombok:1.18.38")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
+
 }
 
 sonar {

@@ -4,35 +4,37 @@ import java.util.List;
 import java.util.Map;
 
 public class PlainFormatter {
-    public static String format(Object diffObject) {
-        List<Map<String, Object>> diff = (List<Map<String, Object>>) diffObject;
-        StringBuilder result = new StringBuilder();
+    public static final String REMOVED_LINE_FORMAT = "Property '%s' was removed";
+    public static final String ADDED_LINE_FORMAT = "Property '%s' was added with value: %s";
+    public static final String UPDATED_LINE_FORMAT = "Property '%s' was updated. From %s to %s";
 
-        for (Map<String, Object> entry : diff) {
-            String key = (String) entry.get("key");
-            String status = (String) entry.get("status");
+    public static String formatPlain(List<Map<String, Object>> diff) {
+        StringBuilder builder = new StringBuilder();
 
-            switch (status) {
-                case "removed" -> result.append("Property '").append(key).append("' was removed\n");
-                case "added" -> result.append("Property '").append(key).append("' was added with value: ").append(formatValue(entry.get("value"))).append("\n");
-                case "updated" -> result.append("Property '").append(key).append("' was updated. From ")
-                        .append(formatValue(entry.get("oldValue"))).append(" to ").append(formatValue(entry.get("newValue"))).append("\n");
-                default -> {}
+        for (Map<String, Object> diffLine : diff) {
+            var fieldStatus = (String) diffLine.get("STATUS");
+            var fieldName = (String) diffLine.get("FIELD");
+            var oldValue = getValue(diffLine.get("OLD_VALUE"));
+            var newValue = getValue(diffLine.get("NEW_VALUE"));
+
+            switch (fieldStatus) {
+                case "REMOVED" -> builder.append(REMOVED_LINE_FORMAT.formatted(fieldName)).append("\n");
+                case "ADDED" -> builder.append(ADDED_LINE_FORMAT.formatted(fieldName, newValue)).append("\n");
+                case "UPDATED" -> builder.append(UPDATED_LINE_FORMAT.formatted(fieldName, oldValue, newValue))
+                        .append("\n");
+                default -> { }
             }
         }
 
-        return result.toString().trim();
+        return builder.toString().trim();
     }
 
-    private static String formatValue(Object value) {
-        if (value == null) {
-            return "null";
-        } else if (value instanceof String) {
-            return "'" + value + "'";
-        } else if (value instanceof Map || value instanceof List) {
+    private static String getValue(Object obj) {
+        if (obj instanceof String) {
+            return "'" + obj + "'";
+        } else if (obj instanceof Map || obj instanceof List) {
             return "[complex value]";
-        } else {
-            return value.toString();
         }
+        return String.valueOf(obj);
     }
 }
