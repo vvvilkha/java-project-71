@@ -36,16 +36,18 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      - name: Grant execute permission for Gradle wrapper
+      - name: Grant execute permission for gradlew
         run: chmod +x app/gradlew
 
       - name: Run Checkstyle
-        run: app/gradlew checkstyleMain checkstyleTest
+        working-directory: app
+        run: ./gradlew checkstyleMain checkstyleTest
 
-      - name: Build and analyze with SonarQube
+      - name: Build, test and analyze with SonarQube
+        working-directory: app
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: app/gradlew build sonarqube --info
+        run: ./gradlew build jacocoTestReport sonarqube --info
 
       - name: Generate Jacoco Test Report
         run: app/gradlew jacocoTestReport
