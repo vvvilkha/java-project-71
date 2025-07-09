@@ -1,0 +1,12 @@
+{"version": 2, "width": 120, "height": 30, "timestamp": 1752082150, "env": {"SHELL": "/bin/bash", "TERM": "xterm-256color"}}
+[0.032013, "o", "\u001b[?2004h\u001b]0;vilkha@User: /mnt/c/Users/vilkh/IdeaProjects/java-project-71/app\u0007\u001b[01;32mvilkha@User\u001b[00m:\u001b[01;34m/mnt/c/Users/vilkh/IdeaProjects/java-project-71/app\u001b[00m$ "]
+[1.200254, "o", "\u001b[7m./build/install/app/bin/app -f plain filepath1.json fil\u001b[27m\u001b[7me\u001b[27m\u001b[7mpath2.json\u001b[27m"]
+[2.190825, "o", "\u001b[A\r\u001b]0;vilkha@User: /mnt/c/Users/vilkh/IdeaProjects/java-project-71/app\u0007\u001b[01;32mvilkha@User\u001b[00m:\u001b[01;34m/mnt/c/Users/vilkh/IdeaProjects/java-project-71/app\u001b[00m$ ./build/install/app/bin/app -f plain filepath1.json filepath2.json\r\n\u001b[?2004l\r"]
+[2.542836, "o", "Error: /mnt/c/Users/vilkh/IdeaProjects/java-project-71/app/filepath1.json\r\n"]
+[2.55309, "o", "\u001b[?2004h\u001b]0;vilkha@User: /mnt/c/Users/vilkh/IdeaProjects/java-project-71/app\u0007\u001b[01;32mvilkha@User\u001b[00m:\u001b[01;34m/mnt/c/Users/vilkh/IdeaProjects/java-project-71/app\u001b[00m$ "]
+[8.351026, "o", "e"]
+[8.592605, "o", "x"]
+[9.462589, "o", "i"]
+[9.664525, "o", "t"]
+[9.830433, "o", "\r\n\u001b[?2004l\r"]
+[9.830611, "o", "exit\r\n"]
