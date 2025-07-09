@@ -32,9 +32,9 @@ jobs:
             ${{ runner.os }}-gradle
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: gradle build
 
       - name: Run SonarCloud analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonarqube
+        run: gradle sonarqube
