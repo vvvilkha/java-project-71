@@ -1,9 +1,14 @@
 package hexlet.code;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Map;
 
 @Command(
         name = "gendiff",
@@ -24,10 +29,23 @@ public class App implements Runnable {
 
     @Override
     public void run() {
-        // Пока просто выводим, что считали аргументы
-        System.out.println("File 1: " + filepath1);
-        System.out.println("File 2: " + filepath2);
-        System.out.println("Format: " + format);
+        try {
+            Map<String, Object> data1 = readFile(filepath1);
+            Map<String, Object> data2 = readFile(filepath2);
+
+            System.out.println("File 1 data: " + data1);
+            System.out.println("File 2 data: " + data2);
+            System.out.println("Format: " + format);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    public static Map<String, Object> readFile(String filepath) throws Exception {
+        String content = Files.readString(Paths.get(filepath).toAbsolutePath().normalize());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(content, Map.class);
     }
 
     public static void main(String[] args) {
