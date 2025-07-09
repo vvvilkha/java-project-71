@@ -7,7 +7,6 @@ import java.util.TreeSet;
 public final class Differ {
 
     private Differ() {
-        // prevents instantiation
     }
 
     public static String generate(final Map<String, Object> data1,

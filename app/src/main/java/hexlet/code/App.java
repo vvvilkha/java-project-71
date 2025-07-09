@@ -5,10 +5,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @Command(
         name = "gendiff",
@@ -31,8 +29,8 @@ public final class App implements Runnable {
     @Override
     public void run() {
         try {
-            Map<String, Object> data1 = readFile(filepath1);
-            Map<String, Object> data2 = readFile(filepath2);
+            Map<String, Object> data1 = Parser.parse(filepath1);
+            Map<String, Object> data2 = Parser.parse(filepath2);
             String diff = Differ.generate(data1, data2);
             System.out.println(diff);
         } catch (Exception e) {
@@ -40,16 +38,9 @@ public final class App implements Runnable {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> readFile(final String filepath)
-            throws Exception {
-        String content = Files.readString(Paths.get(filepath).toAbsolutePath());
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(content, Map.class);
-    }
-
     public static void main(final String[] args) {
         int exitCode = new CommandLine(new App()).execute(args);
         System.exit(exitCode);
     }
 }
+

@@ -1,31 +1,58 @@
 package hexlet.code;
 
 import org.junit.jupiter.api.Test;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class DifferTest {
+class DifferTest {
 
+    private static final String FIXTURES_PATH = "src/test/resources/";
 
     @Test
-    void testFlatDiff() throws Exception {
-        String file1 = "src/test/resources/file1.json";
-        String file2 = "src/test/resources/file2.json";
+    void testJsonDiff() throws Exception {
+        String file1 = FIXTURES_PATH + "file1.json";
+        String file2 = FIXTURES_PATH + "file2.json";
 
-        String content1 = Files.readString(Paths.get(file1).toAbsolutePath());
-        String content2 = Files.readString(Paths.get(file2).toAbsolutePath());
+        Map<String, Object> data1 = Parser.parse(file1);
+        Map<String, Object> data2 = Parser.parse(file2);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> data1 = objectMapper.readValue(content1, Map.class);
-        Map<String, Object> data2 = objectMapper.readValue(content2, Map.class);
+        String expected = """
+            {
+              - follow: false
+                host: hexlet.io
+              - proxy: 123.234.53.22
+              - timeout: 50
+              + timeout: 20
+              + verbose: true
+            }""";
 
-        String diff = Differ.generate(data1, data2);
+        String actual = Differ.generate(data1, data2);
 
-        assertTrue(diff.contains("- follow: false"));
-        assertTrue(diff.contains("+ verbose: true"));
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void testYamlDiff() throws Exception {
+        String file1 = FIXTURES_PATH + "file1.yml";
+        String file2 = FIXTURES_PATH + "file2.yml";
+
+        Map<String, Object> data1 = Parser.parse(file1);
+        Map<String, Object> data2 = Parser.parse(file2);
+
+        String expected = """
+            {
+              - follow: false
+                host: hexlet.io
+              - proxy: 123.234.53.22
+              - timeout: 50
+              + timeout: 20
+              + verbose: true
+            }""";
+
+        String actual = Differ.generate(data1, data2);
+
+        assertThat(actual).isEqualTo(expected);
     }
 }
