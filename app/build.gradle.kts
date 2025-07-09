@@ -28,6 +28,7 @@ dependencies {
     implementation("info.picocli:picocli:4.7.7")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
 }
+
 sonar {
     properties {
         property("sonar.projectKey", "vvvilkha_java-project-71")
@@ -35,6 +36,7 @@ sonar {
         property("sonar.host.url", "https://sonarcloud.io")
     }
 }
+
 tasks.test {
     useJUnitPlatform()
 
