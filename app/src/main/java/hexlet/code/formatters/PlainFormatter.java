@@ -1,5 +1,7 @@
 package hexlet.code.formatters;
 
+import hexlet.code.Constants;
+
 import java.util.List;
 import java.util.Map;
 
@@ -12,15 +14,15 @@ public class PlainFormatter {
         StringBuilder builder = new StringBuilder();
 
         for (Map<String, Object> diffLine : diff) {
-            var fieldStatus = (String) diffLine.get("STATUS");
-            var fieldName = (String) diffLine.get("FIELD");
-            var oldValue = getValue(diffLine.get("OLD_VALUE"));
-            var newValue = getValue(diffLine.get("NEW_VALUE"));
+            String fieldStatus = (String) diffLine.get("STATUS");
+            String fieldName = (String) diffLine.get("FIELD");
+            String oldValue = getValue(diffLine.get("OLD_VALUE"));
+            String newValue = getValue(diffLine.get("NEW_VALUE"));
 
             switch (fieldStatus) {
-                case "REMOVED" -> builder.append(REMOVED_LINE_FORMAT.formatted(fieldName)).append("\n");
-                case "ADDED" -> builder.append(ADDED_LINE_FORMAT.formatted(fieldName, newValue)).append("\n");
-                case "UPDATED" -> builder.append(UPDATED_LINE_FORMAT.formatted(fieldName, oldValue, newValue))
+                case Constants.REMOVED -> builder.append(REMOVED_LINE_FORMAT.formatted(fieldName)).append("\n");
+                case Constants.ADDED -> builder.append(ADDED_LINE_FORMAT.formatted(fieldName, newValue)).append("\n");
+                case Constants.CHANGED -> builder.append(UPDATED_LINE_FORMAT.formatted(fieldName, oldValue, newValue))
                         .append("\n");
                 default -> { }
             }

@@ -1,5 +1,7 @@
 package hexlet.code.formatters;
 
+import hexlet.code.Constants;
+
 import java.util.List;
 import java.util.Map;
 
@@ -15,16 +17,16 @@ public class StylishFormatter {
         builder.append("{\n");
 
         for (Map<String, Object> diffLine : result) {
-            var fieldStatus = (String) diffLine.get("STATUS");
-            var fieldName = (String) diffLine.get("FIELD");
-            var oldFieldValue = diffLine.get("OLD_VALUE");
-            var newFieldValue = diffLine.get("NEW_VALUE");
+            String fieldStatus = (String) diffLine.get("STATUS");
+            String fieldName = (String) diffLine.get("FIELD");
+            Object oldFieldValue = diffLine.get("OLD_VALUE");
+            Object newFieldValue = diffLine.get("NEW_VALUE");
 
             switch (fieldStatus) {
-                case "REMOVED" -> builder.append(REMOVED_LINE_FORMAT.formatted(fieldName, oldFieldValue));
-                case "ADDED" -> builder.append(ADDED_LINE_FORMAT.formatted(fieldName, newFieldValue));
-                case "SAME" -> builder.append(SAME_LINE_FORMAT.formatted(fieldName, oldFieldValue));
-                case "UPDATED" -> {
+                case Constants.REMOVED -> builder.append(REMOVED_LINE_FORMAT.formatted(fieldName, oldFieldValue));
+                case Constants.ADDED -> builder.append(ADDED_LINE_FORMAT.formatted(fieldName, newFieldValue));
+                case Constants.UNCHANGED -> builder.append(SAME_LINE_FORMAT.formatted(fieldName, oldFieldValue));
+                case Constants.CHANGED -> {
                     builder.append(UPDATED_LINE_FORMAT_REMOVED.formatted(fieldName, oldFieldValue));
                     builder.append(UPDATED_LINE_FORMAT_ADDED.formatted(fieldName, newFieldValue));
                 }
@@ -36,3 +38,4 @@ public class StylishFormatter {
         return builder.toString();
     }
 }
+

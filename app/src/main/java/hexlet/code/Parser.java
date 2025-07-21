@@ -9,13 +9,14 @@ import java.util.Map;
 
 public class Parser {
     public static Map<String, Object> parse(String content, String format) throws IOException {
-        var mapper = switch (format) {
-            case "json" -> new ObjectMapper();
-            case "yml" -> new YAMLMapper();
+        ObjectMapper mapper = switch (format) {
+            case Constants.FORMAT_JSON -> new ObjectMapper();
+            case Constants.FORMAT_YML -> new YAMLMapper();
             default -> throw new RuntimeException("Unsupported format: " + format);
         };
         return mapper.readValue(content, new TypeReference<>() {
         });
     }
 }
+
 
