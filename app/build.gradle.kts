@@ -42,6 +42,7 @@ sonar {
         property("sonar.projectKey", "vvvilkha_java-project-71")
         property("sonar.organization", "vvvilkha")
         property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
 
