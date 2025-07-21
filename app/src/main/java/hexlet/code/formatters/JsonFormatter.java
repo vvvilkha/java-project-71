@@ -16,27 +16,19 @@ public class JsonFormatter {
             mappedLine.put("key", line.get("FIELD"));
 
             String status = (String) line.get("STATUS");
+            mappedLine.put("status", status);
 
             switch (status) {
-                case "SAME" -> {
-                    mappedLine.put("status", Constants.UNCHANGED);
-                    mappedLine.put("value", line.get("OLD_VALUE"));
-                }
-                case "REMOVED" -> {
-                    mappedLine.put("status", Constants.REMOVED);
-                    mappedLine.put("value", line.get("OLD_VALUE"));
-                }
-                case "ADDED" -> {
-                    mappedLine.put("status", Constants.ADDED);
-                    mappedLine.put("value", line.get("NEW_VALUE"));
-                }
-                case "UPDATED" -> {
-                    mappedLine.put("status", Constants.CHANGED);
+                case Constants.UNCHANGED -> mappedLine.put("value", line.get("OLD_VALUE"));
+                case Constants.REMOVED -> mappedLine.put("value", line.get("OLD_VALUE"));
+                case Constants.ADDED -> mappedLine.put("value", line.get("NEW_VALUE"));
+                case Constants.CHANGED -> {
                     mappedLine.put("oldValue", line.get("OLD_VALUE"));
                     mappedLine.put("newValue", line.get("NEW_VALUE"));
                 }
-                default -> throw new IllegalStateException("Unknown status: " + status);
+                default -> throw new IllegalStateException("Unexpected status: " + status);
             }
+
             return mappedLine;
         }).collect(Collectors.toList());
 
@@ -45,4 +37,5 @@ public class JsonFormatter {
         return objectMapper.writeValueAsString(mapped);
     }
 }
+
 
