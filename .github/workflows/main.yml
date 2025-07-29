@@ -35,12 +35,12 @@ jobs:
         run: chmod +x gradlew
         working-directory: app
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Run tests and generate coverage
+        run: ./gradlew clean test jacocoTestReport
         working-directory: app
 
       - name: Run SonarCloud analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonarqube
+        run: ./gradlew sonar
         working-directory: app
