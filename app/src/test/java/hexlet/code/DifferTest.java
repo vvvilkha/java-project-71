@@ -35,12 +35,24 @@ public class DifferTest {
 
     private static Stream<Arguments> provideTestCases() {
         return Stream.of(
-                Arguments.of("src/test/resources/files/firstJson.json", "src/test/resources/files/secondJson.json", "stylish", "src/test/resources/expectedResultFiles/resultStylish.txt"),
-                Arguments.of("src/test/resources/files/firstYaml.yml", "src/test/resources/files/secondYaml.yml", "stylish", "src/test/resources/expectedResultFiles/resultStylish.txt"),
-                Arguments.of("src/test/resources/files/firstJson.json", "src/test/resources/files/secondJson.json", "plain", "src/test/resources/expectedResultFiles/resultPlain.txt"),
-                Arguments.of("src/test/resources/files/firstYaml.yml", "src/test/resources/files/secondYaml.yml", "plain", "src/test/resources/expectedResultFiles/resultPlain.txt"),
-                Arguments.of("src/test/resources/files/firstJson.json", "src/test/resources/files/secondJson.json", "json", "src/test/resources/expectedResultFiles/resultJson.json"),
-                Arguments.of("src/test/resources/files/firstYaml.yml", "src/test/resources/files/secondYaml.yml", "json", "src/test/resources/expectedResultFiles/resultJson.json")
+                Arguments.of("src/test/resources/files/firstJson.json",
+                        "src/test/resources/files/secondJson.json", "stylish",
+                        "src/test/resources/expectedResultFiles/resultStylish.txt"),
+                Arguments.of("src/test/resources/files/firstYaml.yml",
+                        "src/test/resources/files/secondYaml.yml",
+                        "stylish", "src/test/resources/expectedResultFiles/resultStylish.txt"),
+                Arguments.of("src/test/resources/files/firstJson.json",
+                        "src/test/resources/files/secondJson.json",
+                        "plain", "src/test/resources/expectedResultFiles/resultPlain.txt"),
+                Arguments.of("src/test/resources/files/firstYaml.yml",
+                        "src/test/resources/files/secondYaml.yml",
+                        "plain", "src/test/resources/expectedResultFiles/resultPlain.txt"),
+                Arguments.of("src/test/resources/files/firstJson.json",
+                        "src/test/resources/files/secondJson.json",
+                        "json", "src/test/resources/expectedResultFiles/resultJson.json"),
+                Arguments.of("src/test/resources/files/firstYaml.yml",
+                        "src/test/resources/files/secondYaml.yml",
+                        "json", "src/test/resources/expectedResultFiles/resultJson.json")
         );
     }
 
