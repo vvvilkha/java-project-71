@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DifferTest {
+public final class DifferTest {
 
     @ParameterizedTest
     @MethodSource("provideTestCases")
