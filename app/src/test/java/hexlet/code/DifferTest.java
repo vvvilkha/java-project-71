@@ -2,107 +2,53 @@ package hexlet.code;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.provider.Arguments;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DifferTest {
 
-    private static String firstYaml;
-    private static String secondYaml;
-    private static String firstJson;
-    private static String secondJson;
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    @DisplayName("Diff generation for various formats and inputs")
+    void testDiffGeneration(String file1, String file2, String format, String expectedPath) throws Exception {
+        String actual = Differ.generate(file1, file2, format);
 
-    @BeforeAll
-    public static void beforeAll() {
-        firstYaml = "src/test/resources/files/firstYaml.yml";
-        secondYaml = "src/test/resources/files/secondYaml.yml";
-        firstJson = "src/test/resources/files/firstJson.json";
-        secondJson = "src/test/resources/files/secondJson.json";
+        if (format.equals("json")) {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode expected = mapper.readTree(Files.readString(Path.of(expectedPath)));
+            JsonNode actualJson = mapper.readTree(actual);
+            assertThat(actualJson).isEqualTo(expected);
+        } else {
+            String expected = Files.readString(Path.of(expectedPath));
+            assertThat(normalize(actual)).isEqualTo(normalize(expected));
+        }
     }
 
-    private String readFile(String path) throws IOException {
-        return new String(Files.readAllBytes(Paths.get(path))).trim();
-    }
-
-    @Test
-    @DisplayName("Throws exception for non-existent file")
-    public void fileNotFound() {
-        String badPath = "src/test/resources/files/non-existentFile.txt";
-        assertThrows(IOException.class, () -> readFile(badPath));
-    }
-
-    @Test
-    @DisplayName("Default format (stylish) for YAML")
-    public void generateDefaultStylishYaml() throws Exception {
-        String expected = readFile("src/test/resources/expectedResultFiles/resultStylish.txt");
-        String actual = Differ.generate(firstYaml, secondYaml);
-        assertThat(normalize(actual)).isEqualTo(normalize(expected));
-    }
-
-    @Test
-    @DisplayName("Stylish format for YAML")
-    public void generateStylishYaml() throws Exception {
-        String expected = readFile("src/test/resources/expectedResultFiles/resultStylish.txt");
-        String actual = Differ.generate(firstYaml, secondYaml, "stylish");
-        assertThat(normalize(actual)).isEqualTo(normalize(expected));
-    }
-
-    @Test
-    @DisplayName("Stylish format for JSON")
-    public void generateStylishJson() throws Exception {
-        String expected = readFile("src/test/resources/expectedResultFiles/resultStylish.txt");
-        String actual = Differ.generate(firstJson, secondJson, "stylish");
-        assertThat(normalize(actual)).isEqualTo(normalize(expected));
-    }
-
-    @Test
-    @DisplayName("JSON output format (JSON input)")
-    public void generateJsonOutputFromJson() throws Exception {
-        assertJsonEquals("src/test/resources/expectedResultFiles/resultJson.json",
-                Differ.generate(firstJson, secondJson, "json"));
-    }
-
-    @Test
-    @DisplayName("JSON output format (YAML input)")
-    public void generateJsonOutputFromYaml() throws Exception {
-        assertJsonEquals("src/test/resources/expectedResultFiles/resultJson.json",
-                Differ.generate(firstYaml, secondYaml, "json"));
-    }
-
-    @Test
-    @DisplayName("Plain format for YAML")
-    public void generatePlainYaml() throws Exception {
-        String expected = readFile("src/test/resources/expectedResultFiles/resultPlain.txt");
-        String actual = Differ.generate(firstYaml, secondYaml, "plain");
-        assertThat(normalize(actual)).isEqualTo(normalize(expected));
-    }
-
-    @Test
-    @DisplayName("Plain format for JSON")
-    public void generatePlainJson() throws Exception {
-        String expected = readFile("src/test/resources/expectedResultFiles/resultPlain.txt");
-        String actual = Differ.generate(firstJson, secondJson, "plain");
-        assertThat(normalize(actual)).isEqualTo(normalize(expected));
+    private static Stream<Arguments> provideTestCases() {
+        return Stream.of(
+                Arguments.of("src/test/resources/files/firstJson.json", "src/test/resources/files/secondJson.json", "stylish", "src/test/resources/expectedResultFiles/resultStylish.txt"),
+                Arguments.of("src/test/resources/files/firstYaml.yml", "src/test/resources/files/secondYaml.yml", "stylish", "src/test/resources/expectedResultFiles/resultStylish.txt"),
+                Arguments.of("src/test/resources/files/firstJson.json", "src/test/resources/files/secondJson.json", "plain", "src/test/resources/expectedResultFiles/resultPlain.txt"),
+                Arguments.of("src/test/resources/files/firstYaml.yml", "src/test/resources/files/secondYaml.yml", "plain", "src/test/resources/expectedResultFiles/resultPlain.txt"),
+                Arguments.of("src/test/resources/files/firstJson.json", "src/test/resources/files/secondJson.json", "json", "src/test/resources/expectedResultFiles/resultJson.json"),
+                Arguments.of("src/test/resources/files/firstYaml.yml", "src/test/resources/files/secondYaml.yml", "json", "src/test/resources/expectedResultFiles/resultJson.json")
+        );
     }
 
     private String normalize(String input) {
         return input.trim().replace("\r\n", "\n").replace("\r", "\n");
     }
-
-    private void assertJsonEquals(String expectedPath, String actualContent) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode expectedJson = mapper.readTree(readFile(expectedPath));
-        JsonNode actualJson = mapper.readTree(actualContent);
-        assertThat(actualJson).isEqualTo(expectedJson);
-    }
 }
+
+
 
 

@@ -14,21 +14,28 @@ public class PlainFormatter {
         StringBuilder builder = new StringBuilder();
 
         for (Map<String, Object> diffLine : diff) {
-            String fieldStatus = (String) diffLine.get("STATUS");
-            String fieldName = (String) diffLine.get("FIELD");
-            String oldValue = getValue(diffLine.get("OLD_VALUE"));
-            String newValue = getValue(diffLine.get("NEW_VALUE"));
-
-            switch (fieldStatus) {
-                case Constants.REMOVED -> builder.append(REMOVED_LINE_FORMAT.formatted(fieldName)).append("\n");
-                case Constants.ADDED -> builder.append(ADDED_LINE_FORMAT.formatted(fieldName, newValue)).append("\n");
-                case Constants.CHANGED -> builder.append(UPDATED_LINE_FORMAT.formatted(fieldName, oldValue, newValue))
-                        .append("\n");
-                default -> { }
+            String line = buildPlainLine(diffLine);
+            if (!line.isEmpty()) {
+                builder.append(line).append("\n");
             }
         }
 
         return builder.toString().trim();
+    }
+
+    private static String buildPlainLine(Map<String, Object> line) {
+        String fieldStatus = (String) line.get("STATUS");
+        String fieldName = (String) line.get("FIELD");
+        String oldValue = getValue(line.get("OLD_VALUE"));
+        String newValue = getValue(line.get("NEW_VALUE"));
+
+        return switch (fieldStatus) {
+            case Constants.REMOVED -> REMOVED_LINE_FORMAT.formatted(fieldName);
+            case Constants.ADDED -> ADDED_LINE_FORMAT.formatted(fieldName, newValue);
+            case Constants.CHANGED -> UPDATED_LINE_FORMAT.formatted(fieldName, oldValue, newValue);
+            case Constants.UNCHANGED -> "";
+            default -> throw new IllegalStateException("Unexpected status: " + fieldStatus);
+        };
     }
 
     private static String getValue(Object obj) {
@@ -40,3 +47,4 @@ public class PlainFormatter {
         return String.valueOf(obj);
     }
 }
+

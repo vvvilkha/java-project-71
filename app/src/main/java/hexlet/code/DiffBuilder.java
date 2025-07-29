@@ -17,29 +17,34 @@ public class DiffBuilder {
         for (String key : allKeys) {
             Object value1 = map1.get(key);
             Object value2 = map2.get(key);
-
-            Map<String, Object> keyCompareResults = new HashMap<>();
-            keyCompareResults.put("FIELD", key);
-
-            if (!map2.containsKey(key)) {
-                keyCompareResults.put("STATUS", Constants.REMOVED);
-                keyCompareResults.put("OLD_VALUE", value1);
-            } else if (!map1.containsKey(key)) {
-                keyCompareResults.put("STATUS", Constants.ADDED);
-                keyCompareResults.put("NEW_VALUE", value2);
-            } else if (Objects.equals(value1, value2)) {
-                keyCompareResults.put("STATUS", Constants.UNCHANGED);
-                keyCompareResults.put("OLD_VALUE", value1);
-            } else {
-                keyCompareResults.put("STATUS", Constants.CHANGED);
-                keyCompareResults.put("OLD_VALUE", value1);
-                keyCompareResults.put("NEW_VALUE", value2);
-            }
-
-            result.add(keyCompareResults);
+            result.add(buildLine(key, value1, value2, map1, map2));
         }
 
         return result;
     }
+
+    private static Map<String, Object> buildLine(String key, Object value1, Object value2,
+                                                 Map<String, Object> map1, Map<String, Object> map2) {
+        Map<String, Object> diffLine = new HashMap<>();
+        diffLine.put("FIELD", key);
+
+        if (!map2.containsKey(key)) {
+            diffLine.put("STATUS", Constants.REMOVED);
+            diffLine.put("OLD_VALUE", value1);
+        } else if (!map1.containsKey(key)) {
+            diffLine.put("STATUS", Constants.ADDED);
+            diffLine.put("NEW_VALUE", value2);
+        } else if (Objects.equals(value1, value2)) {
+            diffLine.put("STATUS", Constants.UNCHANGED);
+            diffLine.put("OLD_VALUE", value1);
+        } else {
+            diffLine.put("STATUS", Constants.CHANGED);
+            diffLine.put("OLD_VALUE", value1);
+            diffLine.put("NEW_VALUE", value2);
+        }
+
+        return diffLine;
+    }
 }
+
 

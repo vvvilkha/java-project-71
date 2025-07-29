@@ -17,25 +17,27 @@ public class StylishFormatter {
         builder.append("{\n");
 
         for (Map<String, Object> diffLine : result) {
-            String fieldStatus = (String) diffLine.get("STATUS");
-            String fieldName = (String) diffLine.get("FIELD");
-            Object oldFieldValue = diffLine.get("OLD_VALUE");
-            Object newFieldValue = diffLine.get("NEW_VALUE");
-
-            switch (fieldStatus) {
-                case Constants.REMOVED -> builder.append(REMOVED_LINE_FORMAT.formatted(fieldName, oldFieldValue));
-                case Constants.ADDED -> builder.append(ADDED_LINE_FORMAT.formatted(fieldName, newFieldValue));
-                case Constants.UNCHANGED -> builder.append(SAME_LINE_FORMAT.formatted(fieldName, oldFieldValue));
-                case Constants.CHANGED -> {
-                    builder.append(UPDATED_LINE_FORMAT_REMOVED.formatted(fieldName, oldFieldValue));
-                    builder.append(UPDATED_LINE_FORMAT_ADDED.formatted(fieldName, newFieldValue));
-                }
-                default -> { }
-            }
+            builder.append(buildStylishLine(diffLine));
         }
 
         builder.append("}");
         return builder.toString();
+    }
+
+    private static String buildStylishLine(Map<String, Object> line) {
+        String status = (String) line.get("STATUS");
+        String key = (String) line.get("FIELD");
+        Object oldValue = line.get("OLD_VALUE");
+        Object newValue = line.get("NEW_VALUE");
+
+        return switch (status) {
+            case Constants.REMOVED -> REMOVED_LINE_FORMAT.formatted(key, oldValue);
+            case Constants.ADDED -> ADDED_LINE_FORMAT.formatted(key, newValue);
+            case Constants.UNCHANGED -> SAME_LINE_FORMAT.formatted(key, oldValue);
+            case Constants.CHANGED -> UPDATED_LINE_FORMAT_REMOVED.formatted(key, oldValue)
+                    + UPDATED_LINE_FORMAT_ADDED.formatted(key, newValue);
+            default -> throw new IllegalStateException("Unexpected status: " + status);
+        };
     }
 }
 
